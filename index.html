@@ -18,5 +18,41 @@
             <th>Read</th>
         </tr>
     </table>
+
+    <dialog>
+        <form>
+            <h1>Add Book</h1>
+
+            <div id="form-author">
+                <label for="author">Author:</label>
+                <input type="text" id="author" name="author" />
+            </div>
+
+            <div id="form-title">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" />
+            </div>
+
+            <div id="form-pages">
+                <label for="pages">Pages:</label>
+                <input type="number" id="pages" name="pages" min="0" step="1" />
+            </div>
+
+            <div id="form-read">
+                <label for="read">Read?</label>
+                <input type="checkbox" id="read" name="read" value="true">
+            </div>
+
+            <div id="submit-book-button">
+                <button type="submit">Submit Book</button>
+            </div>
+        </form>
+
+        <div id="close-form-button">
+            <button>Close</button>
+        </div>
+    </dialog>
+
+    <button id="add-book-button">Add Book</button>
 </body>
 </html>
