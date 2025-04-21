@@ -1,4 +1,9 @@
 const myLibrary = [];
+const bookshelfBody = document.querySelector("#bookshelf-body");
+const dialog = document.querySelector("dialog");
+const addBookButton = document.querySelector("#add-book-button");
+const closeFormButton = document.querySelector("#close-form-button");
+const submitBookButton = document.querySelector("#submit-book-button");
 
 function Book(id, author, title, pages, read) {
   if (!new.target) {
@@ -27,8 +32,6 @@ function addBookToLibrary(author, title, pages, read) {
   myLibrary.push(newBook);
 }
 
-const bookshelfBody = document.querySelector("#bookshelf-body");
-
 function displayBooks() {
   for (const book of myLibrary) {
     const newRow = document.createElement("tr");
@@ -42,9 +45,6 @@ function displayBooks() {
       ) {
         const newCell = document.createElement("td");
         newCell.setAttribute("data-id", book["id"]);
-        if (key === "read") {
-          newCell.setAttribute("class", "readData");
-        }
         newCell.textContent = book[key];
         newRow.appendChild(newCell);
       }
@@ -73,17 +73,6 @@ function displayBooks() {
   removeButtonEvents();
 }
 
-addBookToLibrary("testAuthor", "testTitle", "testPages", true);
-addBookToLibrary("testAuthor2", "testTitle2", "testPages2", false);
-console.table(myLibrary);
-
-displayBooks();
-
-const dialog = document.querySelector("dialog");
-const addBookButton = document.querySelector("#add-book-button");
-const closeFormButton = document.querySelector("#close-form-button");
-const submitBookButton = document.querySelector("#submit-book-button");
-
 addBookButton.addEventListener("click", () => {
   dialog.showModal();
 });
@@ -93,31 +82,37 @@ closeFormButton.addEventListener("click", () => {
 });
 
 submitBookButton.addEventListener("click", (event) => {
-  event.preventDefault();
+  let form = document.querySelector("form");
 
-  let formAuthor = document.querySelector("#author");
-  let formTitle = document.querySelector("#title");
-  let formPages = document.querySelector("#pages");
-  let formRead = document.querySelector("#read");
+  if (form.checkValidity()) {
+    event.preventDefault();
 
-  addBookToLibrary(
-    formAuthor.value,
-    formTitle.value,
-    formPages.value,
-    formRead.checked
-  );
+    let formAuthor = document.querySelector("#author");
+    let formTitle = document.querySelector("#title");
+    let formPages = document.querySelector("#pages");
+    let formRead = document.querySelector("#read");
 
-  console.log(myLibrary);
+    addBookToLibrary(
+      formAuthor.value,
+      formTitle.value,
+      formPages.value,
+      formRead.checked
+    );
 
-  reloadTable();
+    formAuthor.value = "";
+    formTitle.value = "";
+    formPages.value = "";
+    formRead.checked = false;
 
-  dialog.close();
+    reloadTable();
+
+    dialog.close();
+  } else {
+  }
 });
 
 function removeButtonEvents() {
   const removeButtonList = document.querySelectorAll(".remove-button");
-
-  console.log(removeButtonList);
 
   removeButtonList.forEach(function (button) {
     button.addEventListener("click", () => {
@@ -159,3 +154,10 @@ function reloadTable() {
   bookshelfBody.textContent = "";
   displayBooks();
 }
+
+addBookToLibrary("Author 1", "Title 1", 1000, true);
+addBookToLibrary("Author 2", "Title 2", 2000, false);
+addBookToLibrary("Author 3", "Title 3", 3000, true);
+addBookToLibrary("Author 4", "Title 4", 4000, false);
+
+displayBooks();
