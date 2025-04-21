@@ -11,6 +11,14 @@ function Book(id, author, title, pages, read) {
   this.read = read;
 }
 
+Book.prototype.changeRead = function () {
+  if (this.read === true) {
+    this.read = false;
+  } else {
+    this.read = true;
+  }
+};
+
 function addBookToLibrary(author, title, pages, read) {
   let newID = crypto.randomUUID();
 
@@ -19,24 +27,57 @@ function addBookToLibrary(author, title, pages, read) {
   myLibrary.push(newBook);
 }
 
-const bookshelf = document.querySelector("#bookshelf");
+const bookshelfBody = document.querySelector("#bookshelf-body");
 
 function displayBooks() {
   for (const book of myLibrary) {
     const newRow = document.createElement("tr");
 
     for (let key in book) {
-      if (key === "author" || key === "title" || key === "pages" || key === "read") {
+      if (
+        key === "author" ||
+        key === "title" ||
+        key === "pages" ||
+        key === "read"
+      ) {
         const newCell = document.createElement("td");
         newCell.setAttribute("data-id", book["id"]);
+        if (key === "read") {
+          newCell.setAttribute("class", "readData");
+        }
         newCell.textContent = book[key];
         newRow.appendChild(newCell);
       }
     }
 
-    bookshelf.appendChild(newRow);
+    const readButton = document.createElement("button");
+    readButton.setAttribute("data-id", book["id"]);
+    readButton.setAttribute("class", "read-button");
+    if (book["read"] === true) {
+      readButton.textContent = "Unread";
+    } else if (book["read"] === false) {
+      readButton.textContent = "Read";
+    }
+    newRow.appendChild(readButton);
+
+    const removeButton = document.createElement("button");
+    removeButton.setAttribute("data-id", book["id"]);
+    removeButton.setAttribute("class", "remove-button");
+    removeButton.textContent = "X";
+    newRow.appendChild(removeButton);
+
+    bookshelfBody.appendChild(newRow);
   }
+
+  readButtonEvents();
+  removeButtonEvents();
 }
+
+addBookToLibrary("testAuthor", "testTitle", "testPages", true);
+addBookToLibrary("testAuthor2", "testTitle2", "testPages2", false);
+console.table(myLibrary);
+
+displayBooks();
 
 const dialog = document.querySelector("dialog");
 const addBookButton = document.querySelector("#add-book-button");
@@ -45,30 +86,76 @@ const submitBookButton = document.querySelector("#submit-book-button");
 
 addBookButton.addEventListener("click", () => {
   dialog.showModal();
-})
+});
 
 closeFormButton.addEventListener("click", () => {
   dialog.close();
-})
+});
 
 submitBookButton.addEventListener("click", (event) => {
   event.preventDefault();
-  
+
   let formAuthor = document.querySelector("#author");
   let formTitle = document.querySelector("#title");
   let formPages = document.querySelector("#pages");
   let formRead = document.querySelector("#read");
 
-  addBookToLibrary(formAuthor.value, formTitle.value, formPages.value, formRead.checked);
+  addBookToLibrary(
+    formAuthor.value,
+    formTitle.value,
+    formPages.value,
+    formRead.checked
+  );
 
   console.log(myLibrary);
 
-  bookshelf.textContent = "";
+  reloadTable();
+
+  dialog.close();
+});
+
+function removeButtonEvents() {
+  const removeButtonList = document.querySelectorAll(".remove-button");
+
+  console.log(removeButtonList);
+
+  removeButtonList.forEach(function (button) {
+    button.addEventListener("click", () => {
+      if (confirm("Remove Book Fo Sho?")) {
+        let bookID = button.getAttribute("data-id");
+
+        let targetBook = myLibrary.filter(function (book) {
+          return book.id === bookID;
+        });
+
+        let indexOfTargetBook = myLibrary.indexOf(targetBook[0]);
+        myLibrary.splice(indexOfTargetBook, 1);
+
+        reloadTable();
+      }
+    });
+  });
+}
+
+function readButtonEvents() {
+  const readButtonList = document.querySelectorAll(".read-button");
+
+  readButtonList.forEach(function (button) {
+    button.addEventListener("click", () => {
+      let bookID = button.getAttribute("data-id");
+
+      let targetBook = myLibrary.filter(function (book) {
+        return book.id === bookID;
+      });
+
+      targetBook[0].changeRead();
+
+      reloadTable();
+    });
+  });
+}
+
+function reloadTable() {
+  bookshelfBody.textContent = "";
   displayBooks();
-})
-
-addBookToLibrary("testAuthor", "testTitle", "testPages", "testRead");
-addBookToLibrary("testAuthor2", "testTitle2", "testPages2", "testRead2");
-console.table(myLibrary);
-
-displayBooks();
+}
