@@ -150,7 +150,7 @@ dialog form div:nth-child(6) input {
   outline: 1px solid black;
 }
 
-#submit-book-button,
+#submit-book-button-container,
 #close-button-container {
   display: flex;
   justify-content: center;
