@@ -85,13 +85,45 @@ const displayController = (function () {
   submitBookButton.addEventListener("click", (event) => {
     const form = document.querySelector("form");
 
-    if (form.reportValidity()) {
-      event.preventDefault();
+    let formAuthorInput = document.querySelector("#author");
+    let formTitleInput = document.querySelector("#title");
+    let formPagesInput = document.querySelector("#pages");
+    let formReadInput = document.querySelector("#read");
 
-      let formAuthorInput = document.querySelector("#author");
-      let formTitleInput = document.querySelector("#title");
-      let formPagesInput = document.querySelector("#pages");
-      let formReadInput = document.querySelector("#read");
+    const showError = function () {
+      if (formAuthorInput.validity.valueMissing) {
+        formAuthorInput.setCustomValidity("Please enter an author.");
+        formAuthorInput.reportValidity();
+      } else {
+        formAuthorInput.setCustomValidity("");
+      }
+
+      if (formTitleInput.validity.valueMissing) {
+        formTitleInput.setCustomValidity("Please enter a title.");
+        formTitleInput.reportValidity();
+      }
+      else {
+        formTitleInput.setCustomValidity("");
+      }
+
+      if (formPagesInput.validity.valueMissing) {
+        formPagesInput.setCustomValidity("Please enter number of pages.");
+        formPagesInput.reportValidity();
+      }
+      else {
+        formPagesInput.setCustomValidity("");
+      }
+    };
+
+    if (
+      !formAuthorInput.validity.valid ||
+      !formTitleInput.validity.valid ||
+      !formPagesInput.validity.valid
+    ) {
+      showError();
+      event.preventDefault();
+    } else {
+      event.preventDefault();
 
       Library.addBook(
         formAuthorInput.value,
@@ -108,7 +140,6 @@ const displayController = (function () {
       reloadTable();
 
       dialog.close();
-    } else {
     }
   });
 

@@ -25,13 +25,13 @@
     </table>
 
     <dialog>
-      <form>
+      <form novalidate>
         <h2>Add Book</h2>
         <p>* = Required</p>
 
         <div id="form-author">
           <label for="author">Author *</label>
-          <input type="text" id="author" name="author" required />
+          <input type="text" id="author" name="author" required minlength="5"/>
         </div>
 
         <div id="form-title">
